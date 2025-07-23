@@ -1,0 +1,175 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://crawl4ai.com/schemas/crawl_result.json",
+  "title": "Crawl4AI 爬取结果",
+  "description": "定义 Crawl4AI 爬取结果的数据结构",
+  "type": "object",
+  "required": ["url", "success", "timestamp", "crawl_id"],
+  "properties": {
+    "crawl_id": {
+      "type": "string",
+      "description": "爬取任务的唯一标识符",
+      "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "爬取时间戳 (ISO 8601 格式)"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "原始URL"
+    },
+    "success": {
+      "type": "boolean",
+      "description": "是否成功爬取"
+    },
+    "status_code": {
+      "type": ["integer", "null"],
+      "minimum": 100,
+      "maximum": 599,
+      "description": "HTTP 状态码"
+    },
+    "title": {
+      "type": ["string", "null"],
+      "description": "页面标题"
+    },
+    "markdown": {
+      "type": ["string", "null"],
+      "description": "转换后的 Markdown 内容"
+    },
+    "cleaned_html": {
+      "type": ["string", "null"],
+      "description": "清理后的 HTML 内容"
+    },
+    "media": {
+      "type": ["object", "null"],
+      "properties": {
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "src": { "type": "string", "format": "uri" },
+              "alt": { "type": "string" },
+              "width": { "type": ["integer", "null"] },
+              "height": { "type": ["integer", "null"] }
+            }
+          }
+        },
+        "videos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "src": { "type": "string", "format": "uri" },
+              "type": { "type": "string" },
+              "duration": { "type": ["number", "null"] }
+            }
+          }
+        },
+        "audios": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "src": { "type": "string", "format": "uri" },
+              "type": { "type": "string" }
+            }
+          }
+        }
+      },
+      "description": "媒体内容信息"
+    },
+    "links": {
+      "type": ["object", "null"],
+      "properties": {
+        "internal": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" }
+        },
+        "external": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" }
+        }
+      },
+      "description": "链接信息"
+    },
+    "metadata": {
+      "type": ["object", "null"],
+      "properties": {
+        "title": { "type": ["string", "null"] },
+        "description": { "type": ["string", "null"] },
+        "keywords": { "type": ["string", "null"] },
+        "author": { "type": ["string", "null"] },
+        "robots": { "type": ["string", "null"] },
+        "canonical": { "type": ["string", "null"] },
+        "og": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" },
+            "image": { "type": "string", "format": "uri" },
+            "url": { "type": "string", "format": "uri" }
+          }
+        }
+      },
+      "description": "页面元数据"
+    },
+    "screenshot": {
+      "type": ["string", "null"],
+      "description": "页面截图 (base64 编码)"
+    },
+    "pdf": {
+      "type": ["string", "null"],
+      "description": "页面 PDF (base64 编码)"
+    },
+    "execution_time": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "执行时间 (秒)"
+    },
+    "error_message": {
+      "type": ["string", "null"],
+      "description": "错误信息 (如果失败)"
+    },
+    "extracted_data": {
+      "type": ["object", "array", "null"],
+      "description": "结构化提取的数据"
+    },
+    "config": {
+      "type": "object",
+      "description": "使用的爬取配置",
+      "properties": {
+        "word_count_threshold": { "type": "integer" },
+        "cache_mode": { "type": "string" },
+        "only_text": { "type": "boolean" },
+        "screenshot": { "type": "boolean" },
+        "pdf": { "type": "boolean" },
+        "deep_crawl": { "type": "boolean" },
+        "crawl_depth": { "type": "integer" }
+      }
+    },
+    "analysis": {
+      "type": ["object", "null"],
+      "description": "分析结果",
+      "properties": {
+        "word_count": { "type": "integer", "minimum": 0 },
+        "char_count": { "type": "integer", "minimum": 0 },
+        "paragraph_count": { "type": "integer", "minimum": 0 },
+        "sentence_count": { "type": "integer", "minimum": 0 },
+        "language": { "type": "string" },
+        "readability_score": { "type": "number" },
+        "content_type": {
+          "type": "string",
+          "enum": ["article", "product", "news", "blog", "documentation", "other"]
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+} 

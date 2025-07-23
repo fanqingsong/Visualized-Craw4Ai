@@ -1,0 +1,43 @@
+{
+  "crawl_id": "ab2b7a6d-d4c5-5456-b9a6-d497591d17d2",
+  "timestamp": "2025-07-22T18:11:03.760903",
+  "config": {
+    "cache_mode": "enabled",
+    "only_text": true,
+    "magic": true
+  },
+  "result": {
+    "url": "https://httpbin.org/html",
+    "success": true,
+    "status_code": 200,
+    "title": "Test Page",
+    "markdown": "# Test Content\n\nThis is a test page with some content.",
+    "execution_time": 1.23,
+    "media": {
+      "images": [],
+      "videos": [],
+      "audios": []
+    },
+    "links": {
+      "internal": [],
+      "external": []
+    }
+  },
+  "analysis": {
+    "success": true,
+    "status_code": 200,
+    "execution_time": 1.23,
+    "word_count": 11,
+    "char_count": 54,
+    "paragraph_count": 1,
+    "has_content": true,
+    "image_count": 0,
+    "video_count": 0,
+    "audio_count": 0,
+    "internal_links": 0,
+    "external_links": 0,
+    "has_screenshot": false,
+    "has_pdf": false,
+    "has_structured_data": false
+  }
+}

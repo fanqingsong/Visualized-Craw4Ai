@@ -10,11 +10,6 @@ import os
 import sys
 from pathlib import Path
 
-# 添加 crawl4ai 模块路径
-project_root = Path(__file__).parent.parent.parent.parent
-crawl4ai_path = project_root / "crawl4ai"
-sys.path.insert(0, str(crawl4ai_path))
-
 from app.routers import crawler, tasks, projects
 from app.models.database import init_db
 from app.utils.logging import setup_logging

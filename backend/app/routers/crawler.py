@@ -1,5 +1,5 @@
 """
-爬虫相关的 API 路由
+爬虫相关的 API 路由 - 简化版本
 """
 
 from fastapi import APIRouter, HTTPException, BackgroundTasks
@@ -8,12 +8,6 @@ import uuid
 import time
 import asyncio
 from datetime import datetime
-import sys
-from pathlib import Path
-
-# 添加数据分析工具路径
-project_root = Path(__file__).parent.parent.parent.parent
-sys.path.append(str(project_root / "data_analysis" / "tools"))
 
 from app.models.schemas import (
     SingleCrawlRequest, BatchCrawlRequest, StructuredExtractionRequest,
@@ -23,17 +17,6 @@ from app.services.crawler_service import CrawlerService
 from app.services.task_service import TaskService
 from app.utils.logging import get_logger
 
-# 导入数据保存工具
-try:
-    from save_crawl_data import CrawlDataSaver
-    print(f"✅ 成功导入数据保存工具")
-except ImportError as e:
-    print(f"警告: 无法导入数据保存工具 ({e})，将跳过自动保存功能")
-    CrawlDataSaver = None
-except Exception as e:
-    print(f"警告: 数据保存工具初始化失败 ({e})，将跳过自动保存功能")
-    CrawlDataSaver = None
-
 router = APIRouter()
 logger = get_logger(__name__)
 
@@ -41,16 +24,10 @@ logger = get_logger(__name__)
 crawler_service = CrawlerService()
 task_service = TaskService()
 
-# 初始化数据保存器
-data_saver = CrawlDataSaver() if CrawlDataSaver else None
-
 @router.post("/single", response_model=CrawlResponse)
 async def crawl_single_url(request: SingleCrawlRequest):
     """
-    爬取单个URL
-    
-    这是一个同步接口，适合快速的单个URL爬取。
-    对于耗时较长的任务，建议使用异步接口。
+    爬取单个URL - 简化版本
     """
     try:
         logger.info(f"开始爬取单个URL: {request.url}")
@@ -64,17 +41,6 @@ async def crawl_single_url(request: SingleCrawlRequest):
         
         execution_time = time.time() - start_time
         result.execution_time = execution_time
-        
-        # 自动保存成功的爬取结果
-        if result.success and data_saver:
-            try:
-                result_dict = result.dict()
-                config_dict = request.config.dict()
-                saved_path = data_saver.save_single_crawl(result_dict, config_dict)
-                logger.info(f"爬取结果已自动保存到: {saved_path}")
-            except Exception as save_error:
-                logger.error(f"保存爬取结果失败: {save_error}")
-                # 不影响主要的爬取流程，继续返回结果
         
         logger.info(f"单个URL爬取完成: {request.url}, 耗时: {execution_time:.2f}s")
         
@@ -92,9 +58,6 @@ async def crawl_single_url(request: SingleCrawlRequest):
 async def crawl_batch_urls(request: BatchCrawlRequest, background_tasks: BackgroundTasks):
     """
     批量爬取URLs (异步)
-    
-    创建一个后台任务来处理批量爬取，立即返回任务ID。
-    客户端可以通过任务ID查询进度和结果。
     """
     try:
         # 创建任务
@@ -133,9 +96,7 @@ async def crawl_batch_urls(request: BatchCrawlRequest, background_tasks: Backgro
 @router.post("/extract", response_model=CrawlResponse)
 async def extract_structured_data(request: StructuredExtractionRequest):
     """
-    结构化数据提取
-    
-    使用自然语言指令从网页中提取结构化数据。
+    结构化数据提取 - 简化版本
     """
     try:
         logger.info(f"开始结构化数据提取: {request.url}")
@@ -150,21 +111,6 @@ async def extract_structured_data(request: StructuredExtractionRequest):
         
         execution_time = time.time() - start_time
         result.execution_time = execution_time
-        
-        # 自动保存结构化提取结果
-        if result.success and data_saver:
-            try:
-                result_dict = result.dict()
-                config_dict = request.config.dict()
-                saved_path = data_saver.save_structured_extraction(
-                    str(request.url),
-                    request.extraction_prompt,
-                    result_dict,
-                    config_dict
-                )
-                logger.info(f"结构化提取结果已自动保存到: {saved_path}")
-            except Exception as save_error:
-                logger.error(f"保存结构化提取结果失败: {save_error}")
         
         logger.info(f"结构化数据提取完成: {request.url}, 耗时: {execution_time:.2f}s")
         
@@ -182,8 +128,6 @@ async def extract_structured_data(request: StructuredExtractionRequest):
 async def test_crawler_connection():
     """
     测试爬虫连接
-    
-    用于检查 crawl4ai 是否正常工作。
     """
     try:
         # 测试一个简单的爬取
@@ -227,16 +171,6 @@ async def _process_batch_crawl(
         # 统计结果
         completed_urls = sum(1 for r in results if r.success)
         failed_urls = len(results) - completed_urls
-        
-        # 自动保存批量爬取结果
-        if data_saver and results:
-            try:
-                results_dict = [r.dict() for r in results]
-                config_dict = config.dict()
-                saved_path = data_saver.save_batch_crawl(task_id, results_dict, config_dict)
-                logger.info(f"批量爬取结果已自动保存到: {saved_path}")
-            except Exception as save_error:
-                logger.error(f"保存批量爬取结果失败: {save_error}")
         
         # 更新任务完成状态
         await task_service.complete_task(

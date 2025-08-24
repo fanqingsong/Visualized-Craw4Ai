@@ -1,10 +1,13 @@
 # FastAPI 核心依赖
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
+fastapi>=0.115.4
+uvicorn[standard]>=0.32.0
+pydantic>=2.9.2
 
-# Crawl4AI 依赖 (假设已经在项目中)
-# crawl4ai  # 将从本地导入
+# Crawl4AI 依赖 - 使用最新稳定版本
+crawl4ai>=0.3.72
+
+# 备用爬取方案
+playwright>=1.40.0
 
 # 数据库和缓存
 sqlalchemy==2.0.23
